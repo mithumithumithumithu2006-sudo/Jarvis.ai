@@ -162,15 +162,6 @@
     </div>
 
     <div class="input-container" 
-         input-container {
-         position: fixed;
-         bottom: 100px;
-         left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 600px;
-         z-index: 1000;}
-       
         <div class="input-area">
             <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile()">
             <button class="icon-btn clip-btn" onclick="document.getElementById('fileInput').click()" title="Attach Photo">📎</button>
@@ -337,7 +328,8 @@
             }
 
             if (lowerCommand.includes('created you') || lowerCommand.includes('உருவாக்கியவர்') || lowerCommand.includes('who created you') || lowerCommand.includes('கிரியேட் பண்ணது')) {
-                let reply = "என்னை உருவாக்கியவர் பெருமதிப்பிற்குரிய Mr. Muthishan ஆவார். (I was created by Mr. Muthishan.)";
+                let reply = "என்னை உருவாக்கியவர் பெருமதிப்பிற்குரிய Mr. Muthishan <br>
+                    from sri langka ஆவார். (I was created by Mr. Muthishan.)";
                 addMessage("Jarvis", reply);
                 speak(reply);
                 return;
