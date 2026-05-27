@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Helvetica Neue', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         :root {
@@ -30,6 +30,314 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* ============== LANDING PAGE STYLES ============== */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(11, 12, 16, 0.95) 0%, rgba(31, 40, 51, 0.5) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background Blobs */
+        .landing-page::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102, 252, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .landing-page::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -30%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(69, 243, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out reverse;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 60px;
+            z-index: 1;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .logo-container h1 {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--accent-color);
+            letter-spacing: 4px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .logo-container p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            opacity: 0.8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--primary-color); }
+            to { text-shadow: 0 0 25px var(--accent-color), 0 0 50px var(--accent-color); }
+        }
+
+        /* ============== SEARCH BAR CONTAINER ============== */
+        .search-container {
+            position: fixed;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            z-index: 10;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* ============== MODERN SEARCH BAR (GLASSMORPHISM) ============== */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1.5px solid rgba(102, 252, 241, 0.25);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+                        0 0 20px rgba(102, 252, 241, 0.1),
+                        inset 0 0 20px rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Shimmer effect on hover */
+        .search-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+            pointer-events: none;
+        }
+
+        .search-bar:hover::before {
+            left: 100%;
+        }
+
+        /* Focus state */
+        .search-bar:focus-within {
+            background: rgba(31, 40, 51, 0.6);
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+                        0 0 30px rgba(102, 252, 241, 0.25),
+                        inset 0 0 20px rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .search-bar:hover:not(:focus-within) {
+            border-color: rgba(102, 252, 241, 0.4);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35),
+                        0 0 25px rgba(102, 252, 241, 0.15);
+        }
+
+        /* Search input field */
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.05rem;
+            outline: none;
+            padding: 0 8px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(197, 198, 199, 0.5);
+            font-weight: 400;
+        }
+
+        .search-bar input:focus::placeholder {
+            color: rgba(197, 198, 199, 0.3);
+        }
+
+        /* ============== SEARCH BAR BUTTONS ============== */
+        .search-bar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            transition: all 0.25s ease;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .search-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(102, 252, 241, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+            pointer-events: none;
+        }
+
+        .search-btn:hover::before {
+            width: 40px;
+            height: 40px;
+        }
+
+        .search-btn:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .search-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Listening state animation */
+        .search-btn.listening {
+            animation: pulse-btn 1s infinite;
+            color: var(--error-color);
+        }
+
+        @keyframes pulse-btn {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* ============== QUICK SUGGESTIONS ============== */
+        .suggestions-container {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+
+        .suggestions-title {
+            font-size: 0.9rem;
+            color: rgba(197, 198, 199, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            max-width: 600px;
+        }
+
+        .suggestion-chip {
+            padding: 12px 20px;
+            background: rgba(31, 40, 51, 0.3);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            border-radius: 25px;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(102, 252, 241, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 252, 241, 0.15);
+        }
+
+        .suggestion-chip:active {
+            transform: translateY(-1px);
+        }
+
+        /* ============== CHAT INTERFACE (Hidden initially) ============== */
+        .chat-interface {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chat-interface.active {
+            display: flex;
         }
 
         header {
@@ -56,11 +364,6 @@
             background-color: var(--success-color);
             margin-left: 10px;
             animation: blink 1s infinite;
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
-            to { text-shadow: 0 0 20px var(--accent-color), 0 0 40px var(--accent-color); }
         }
 
         @keyframes blink {
@@ -253,7 +556,39 @@
             display: none !important;
         }
 
+        /* ============== RESPONSIVE DESIGN ============== */
         @media (max-width: 768px) {
+            .logo-container h1 {
+                font-size: 2.5rem;
+            }
+
+            .logo-container p {
+                font-size: 0.95rem;
+            }
+
+            .search-container {
+                width: 95%;
+                max-width: none;
+            }
+
+            .search-bar {
+                padding: 12px 16px;
+            }
+
+            .search-bar input {
+                font-size: 1rem;
+            }
+
+            .suggestions-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .suggestion-chip {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
             header h1 {
                 font-size: 1.8rem;
             }
@@ -266,34 +601,103 @@
                 max-width: 95%;
             }
         }
+
+        @media (max-width: 480px) {
+            .logo-container h1 {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .search-bar {
+                padding: 10px 14px;
+                gap: 8px;
+            }
+
+            .search-bar input {
+                font-size: 0.95rem;
+            }
+
+            .search-btn {
+                padding: 6px 10px;
+                font-size: 1.1rem;
+            }
+
+            .suggestions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .suggestion-chip {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+
+            .suggestions-container {
+                margin-top: 30px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>JARVIS <span class="status-indicator"></span></h1>
-    </header>
+    <!-- Landing Page with Modern Search Bar -->
+    <div class="landing-page" id="landingPage">
+        <div class="logo-container">
+            <h1>JARVIS</h1>
+            <p>Your AI Assistant</p>
+        </div>
 
-    <div class="chat-container" id="chatContainer">
-        <div class="message jarvis-message">
-            <strong>Jarvis:</strong> Online and ready to assist! 🚀
+        <div class="search-container">
+            <div class="search-bar" id="searchBar">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Ask Jarvis anything in any language..."
+                    onkeypress="handleSearchKeyPress(event)">
+                <div class="search-bar-buttons">
+                    <button class="search-btn" id="micBtnLanding" onclick="startVoiceRecognitionLanding()" title="Speak (Ctrl+I)">🎤</button>
+                    <button class="search-btn" onclick="initiateChat()" title="Send">➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="suggestions-container">
+            <div class="suggestions-title">Try asking</div>
+            <div class="suggestions-grid">
+                <div class="suggestion-chip" onclick="handleSuggestion('Explain quantum computing')">Quantum Computing</div>
+                <div class="suggestion-chip" onclick="handleSuggestion('How does AI work?')">How does AI work?</div>
+                <div class="suggestion-chip" onclick="handleSuggestion('Code a simple calculator')">Code a Calculator</div>
+                <div class="suggestion-chip" onclick="handleSuggestion('Tell me a joke')">Tell me a joke</div>
+            </div>
         </div>
     </div>
 
-    <div class="preview-container" id="previewContainer">
-        <img id="imagePreview" src="" alt="Preview">
-        <button class="icon-btn" onclick="clearImagePreview()" title="Remove Image">✕</button>
-    </div>
+    <!-- Chat Interface -->
+    <div class="chat-interface" id="chatInterface">
+        <header>
+            <h1>JARVIS <span class="status-indicator"></span></h1>
+        </header>
 
-    <div class="info-bar" id="infoBar" style="display: none;"></div>
+        <div class="chat-container" id="chatContainer">
+            <div class="message jarvis-message">
+                <strong>Jarvis:</strong> Online and ready to assist! 🚀
+            </div>
+        </div>
 
-    <div class="input-container">
-        <div class="input-area">
-            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile()">
-            <button class="icon-btn clip-btn" onclick="document.getElementById('fileInput').click()" title="Attach Photo">📎</button>
-            <input type="text" id="userInput" placeholder="Ask Jarvis anything in any language..." onkeypress="checkEnter(event)">
-            <button class="icon-btn mic-btn" id="micBtn" onclick="startVoiceRecognition()" title="Speak (Ctrl+I)">🎤</button>
-            <button class="icon-btn send-btn" onclick="handleTextSubmit()" title="Send">➔</button>
+        <div class="preview-container" id="previewContainer">
+            <img id="imagePreview" src="" alt="Preview">
+            <button class="icon-btn" onclick="clearImagePreview()" title="Remove Image">✕</button>
+        </div>
+
+        <div class="info-bar" id="infoBar" style="display: none;"></div>
+
+        <div class="input-container">
+            <div class="input-area">
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile()">
+                <button class="icon-btn clip-btn" onclick="document.getElementById('fileInput').click()" title="Attach Photo">📎</button>
+                <input type="text" id="userInput" placeholder="Ask Jarvis anything in any language..." onkeypress="checkEnter(event)">
+                <button class="icon-btn mic-btn" id="micBtn" onclick="startVoiceRecognition()" title="Speak (Ctrl+I)">🎤</button>
+                <button class="icon-btn send-btn" onclick="handleTextSubmit()" title="Send">➔</button>
+            </div>
         </div>
     </div>
 
@@ -314,7 +718,8 @@
             isListening: false,
             isProcessing: false,
             base64Image: "",
-            messageHistory: []
+            messageHistory: [],
+            isInChat: false
         };
 
         // ============== SPEECH & RECOGNITION ==============
@@ -336,13 +741,22 @@
                 const command = event.results[0][0].transcript;
                 state.isListening = false;
                 updateMicButton();
-                processCommand(command);
+                if (state.isInChat) {
+                    processCommand(command);
+                } else {
+                    document.getElementById('searchInput').value = command;
+                    initiateChat();
+                }
             };
 
             recognition.onerror = (event) => {
                 state.isListening = false;
                 updateMicButton();
-                addMessage("Jarvis", `🔴 Microphone error: ${event.error}. Please try again.`, 'error');
+                if (state.isInChat) {
+                    addMessage("Jarvis", `🔴 Microphone error: ${event.error}. Please try again.`, 'error');
+                } else {
+                    alert(`Microphone error: ${event.error}`);
+                }
             };
 
             recognition.onend = () => {
@@ -352,11 +766,15 @@
         }
 
         function updateMicButton() {
+            const micBtnLanding = document.getElementById('micBtnLanding');
             const micBtn = document.getElementById('micBtn');
+            
             if (state.isListening) {
-                micBtn.classList.add('listening-active');
+                if (micBtnLanding) micBtnLanding.classList.add('listening');
+                if (micBtn) micBtn.classList.add('listening-active');
             } else {
-                micBtn.classList.remove('listening-active');
+                if (micBtnLanding) micBtnLanding.classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening-active');
             }
         }
 
@@ -385,6 +803,47 @@
             
             if (selectedVoice) utterThis.voice = selectedVoice;
             synth.speak(utterThis);
+        }
+
+        // ============== LANDING PAGE FUNCTIONS ==============
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                initiateChat();
+            }
+        }
+
+        function handleSuggestion(text) {
+            document.getElementById('searchInput').value = text;
+            initiateChat();
+        }
+
+        function initiateChat() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            if (!searchInput) return;
+
+            state.isInChat = true;
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('chatInterface').classList.add('active');
+            
+            processCommand(searchInput);
+            document.getElementById('userInput').focus();
+        }
+
+        function startVoiceRecognitionLanding() {
+            if (!recognition) {
+                alert("Your browser doesn't support Speech Recognition.");
+                return;
+            }
+            
+            if (state.isListening) {
+                recognition.stop();
+                return;
+            }
+
+            const currentInput = document.getElementById('searchInput').value;
+            const langConfig = detectLanguage(currentInput);
+            recognition.lang = langConfig.lang;
+            recognition.start();
         }
 
         // ============== MESSAGE HANDLING ==============
@@ -479,7 +938,11 @@
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'i') {
                 e.preventDefault();
-                startVoiceRecognition();
+                if (state.isInChat) {
+                    startVoiceRecognition();
+                } else {
+                    startVoiceRecognitionLanding();
+                }
             }
         });
 
