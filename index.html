@@ -999,80 +999,43 @@ Always maintain this identity and respond in the language the user speaks. Be he
                 }
 
                 const data = await response.json();
-                
-                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                    throw new Error("Invalid API response format");
-                }
-
-                return data.candidates[0].content.parts[0].text;
+                const responseText = data.candidates[0].content.parts[0].text;
+                return responseText;
             } catch (error) {
-                console.error('API Error:', error);
-                return `❌ Sorry, I encountered an error: ${error.message}. Please try again.`;
+                throw new Error(`Failed to get response: ${error.message}`);
             }
         }
 
-        // ============== COMMAND PROCESSING ==============
+        // ============== PROCESS COMMAND ==============
         async function processCommand(command) {
-            if (state.isProcessing) return;
-
-            state.isProcessing = true;
+            if (!command.trim()) return;
+            
             addMessage("You", command);
-            let lowerCommand = command.toLowerCase();
-
-            // Special Commands
-            if (lowerCommand.includes('code red') || lowerCommand.includes('கோட் ரெட்')) {
-                speak("Code Red confirmed. Shutting down Jarvis system. Goodbye!");
-                setTimeout(() => {
-                    document.body.innerHTML = "<h1 style='color:#ff4545; text-align:center; margin-top:45vh; font-family:sans-serif;'>SYSTEM CLOSED (CODE RED)</h1>";
-                }, 2500);
-                state.isProcessing = false;
-                return;
-            }
-
-            if (lowerCommand.includes('who created you') || lowerCommand.includes('created you') || 
-                lowerCommand.includes('உருவாக்கியவர்')) {
-                const reply = `I was created by the esteemed ${CONFIG.CREATOR_NAME}. 🎯`;
-                addMessage("Jarvis", reply);
-                speak(reply);
-                state.isProcessing = false;
-                return;
-            }
-
-            // Clear preview and reset image
-            clearImagePreview();
-            let currentImg = state.base64Image;
-            state.base64Image = "";
-
-            // Show thinking message
-            const thinkingMsg = "Thinking...";
-            addMessage("Jarvis", thinkingMsg, 'thinking');
+            state.isProcessing = true;
             
             try {
-                const aiReply = await askGemini(command, currentImg);
+                addMessage("Jarvis", "🤔 Thinking...", "thinking");
+                const response = await askGemini(command, state.base64Image);
                 
                 // Remove thinking message
                 const chatContainer = document.getElementById('chatContainer');
-                chatContainer.removeChild(chatContainer.lastChild);
-                
-                addMessage("Jarvis", aiReply);
-                speak(aiReply);
-            } catch (error) {
-                const chatContainer = document.getElementById('chatContainer');
-                if (chatContainer.lastChild) {
-                    chatContainer.removeChild(chatContainer.lastChild);
+                const messages = chatContainer.querySelectorAll('.message');
+                if (messages[messages.length - 1].textContent.includes('Thinking')) {
+                    messages[messages.length - 1].remove();
                 }
-                addMessage("Jarvis", `❌ An error occurred: ${error.message}`, 'error');
+                
+                addMessage("Jarvis", response);
+                speak(response);
+                
+                if (state.base64Image) {
+                    clearImagePreview();
+                }
+            } catch (error) {
+                addMessage("Jarvis", `❌ Error: ${error.message}`, "error");
+            } finally {
+                state.isProcessing = false;
             }
-
-            state.isProcessing = false;
         }
-
-        // ============== INITIALIZATION ==============
-        window.addEventListener('load', () => {
-            synth.onvoiceschanged = () => {
-                synth.getVoices();
-            };
-        });
     </script>
 </body>
 </html>
