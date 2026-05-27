@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis AI</title>
+    <title>Jarvis AI - Advanced Voice Assistant</title>
     <style>
         * {
             margin: 0;
@@ -12,9 +12,20 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        :root {
+            --primary-color: #66fcf1;
+            --accent-color: #45f3ff;
+            --dark-bg: #0b0c10;
+            --secondary-bg: #1f2833;
+            --text-primary: #c5c6c7;
+            --text-light: #e3e3e3;
+            --error-color: #ff4545;
+            --success-color: #45ff45;
+        }
+
         body {
-            background-color: #0b0c10;
-            color: #c5c6c7;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -24,22 +35,37 @@
         header {
             padding: 20px;
             text-align: center;
-            border-bottom: 1px solid #1f2833;
-            background-color: #0b0c10;
+            border-bottom: 1px solid var(--secondary-bg);
+            background-color: var(--dark-bg);
         }
 
         header h1 {
             font-size: 2.2rem;
-            color: #66fcf1;
-            text-shadow: 0 0 15px #66fcf1, 0 0 30px #45f3ff;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--accent-color);
             letter-spacing: 3px;
             font-weight: bold;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            margin-left: 10px;
+            animation: blink 1s infinite;
+        }
+
         @keyframes glow {
-            from { text-shadow: 0 0 10px #66fcf1, 0 0 20px #66fcf1; }
-            to { text-shadow: 0 0 20px #45f3ff, 0 0 40px #45f3ff; }
+            from { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+            to { text-shadow: 0 0 20px var(--accent-color), 0 0 40px var(--accent-color); }
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0.5; }
         }
 
         .chat-container {
@@ -49,21 +75,48 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             margin: 0 auto;
         }
 
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
         .message {
-            max-width: 80%;
+            max-width: 85%;
             padding: 12px 16px;
             border-radius: 18px;
             font-size: 1rem;
             line-height: 1.5;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-message {
-            background-color: #1f2833;
+            background-color: var(--secondary-bg);
             color: #fff;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
@@ -72,9 +125,21 @@
 
         .jarvis-message {
             background-color: transparent;
-            color: #e3e3e3;
+            color: var(--text-light);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 13px;
+        }
+
+        .thinking-message {
+            color: var(--primary-color);
+            font-style: italic;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            border-left-color: var(--error-color);
         }
 
         .preview-container {
@@ -83,12 +148,15 @@
             margin: 0 auto;
             padding: 0 20px;
             display: none;
+            text-align: center;
         }
+
         #imagePreview {
-            max-height: 80px;
+            max-height: 200px;
             border-radius: 8px;
-            border: 2px solid #66fcf1;
-            margin-bottom: 5px;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
         }
 
         .input-container {
@@ -96,19 +164,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #0b0c10;
+            background-color: var(--dark-bg);
+            gap: 10px;
         }
 
         .input-area {
             display: flex;
             align-items: center;
-            background-color: #1f2833;
-            border: 1px solid #45f3ff;
+            background-color: var(--secondary-bg);
+            border: 2px solid var(--primary-color);
             border-radius: 30px;
             padding: 10px 20px;
             width: 100%;
-            max-width: 700px;
-            box-shadow: 0 0 15px rgba(102, 252, 241, 0.1);
+            max-width: 800px;
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .input-area:focus-within {
+            box-shadow: 0 0 25px rgba(102, 252, 241, 0.3);
+            border-color: var(--accent-color);
         }
 
         .input-area input {
@@ -121,139 +196,286 @@
             padding: 0 10px;
         }
 
+        .input-area input::placeholder {
+            color: rgba(197, 198, 199, 0.6);
+        }
+
         .icon-btn {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 5px;
-            font-size: 1.2rem;
-            transition: transform 0.2s;
+            padding: 8px;
+            font-size: 1.3rem;
+            transition: all 0.2s ease;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .icon-btn:hover { transform: scale(1.1); }
-        .clip-btn { color: #66fcf1; margin-right: 5px; }
-        .mic-btn { color: #66fcf1; margin-right: 10px; }
-        .send-btn { color: #66fcf1; }
+        .icon-btn:hover {
+            transform: scale(1.15);
+            background-color: rgba(102, 252, 241, 0.1);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        .clip-btn { color: var(--primary-color); margin-right: 5px; }
+        .mic-btn { color: var(--primary-color); margin-right: 10px; }
+        .send-btn { color: var(--primary-color); }
 
         .listening-active {
             animation: pulse 1s infinite alternate;
+            background-color: rgba(255, 69, 69, 0.2);
         }
 
         @keyframes pulse {
-            from { transform: scale(1); color: #66fcf1; }
-            to { transform: scale(1.2); color: #ff4545; }
+            from { transform: scale(1); color: var(--primary-color); }
+            to { transform: scale(1.2); color: var(--error-color); }
+        }
+
+        .info-bar {
+            background-color: var(--secondary-bg);
+            border-top: 1px solid var(--primary-color);
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .message {
+                max-width: 95%;
+            }
+
+            .input-area {
+                max-width: 95%;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>JARVIS</h1>
+        <h1>JARVIS <span class="status-indicator"></span></h1>
     </header>
 
     <div class="chat-container" id="chatContainer">
         <div class="message jarvis-message">
-            <strong>Jarvis:</strong> Online...  
+            <strong>Jarvis:</strong> Online and ready to assist! 🚀
         </div>
     </div>
 
     <div class="preview-container" id="previewContainer">
         <img id="imagePreview" src="" alt="Preview">
+        <button class="icon-btn" onclick="clearImagePreview()" title="Remove Image">✕</button>
     </div>
+
+    <div class="info-bar" id="infoBar" style="display: none;"></div>
 
     <div class="input-container">
         <div class="input-area">
             <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile()">
             <button class="icon-btn clip-btn" onclick="document.getElementById('fileInput').click()" title="Attach Photo">📎</button>
             <input type="text" id="userInput" placeholder="Ask Jarvis anything in any language..." onkeypress="checkEnter(event)">
-            <button class="icon-btn mic-btn" id="micBtn" onclick="startVoiceRecognition()" title="Speak">🎤</button>
+            <button class="icon-btn mic-btn" id="micBtn" onclick="startVoiceRecognition()" title="Speak (Ctrl+I)">🎤</button>
             <button class="icon-btn send-btn" onclick="handleTextSubmit()" title="Send">➔</button>
         </div>
     </div>
 
     <script>
-        // இங்க உங்களுடைய உத்தியோகபூர்வ ஜெமினி API Key-ஐ போடவும்
-        const GEMINI_API_KEY ="AIzaSyA_w-VbIPooD7BbDd4PTKAj71Jxga6IMVw"; 
-        
+        // ============== CONFIGURATION ==============
+        const CONFIG = {
+            API_KEY: 'AIzaSyA_w-VbIPooD7BbDd4PTKAj71Jxga6IMVw',
+            API_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+            CREATOR_NAME: 'Mr. Muthishan',
+            LANGUAGES: {
+                tamil: { regex: /[\u0B80-\u0BFF]/, lang: 'ta-IN' },
+                sinhala: { regex: /[\u0D80-\u0DFF]/, lang: 'si-LK' }
+            }
+        };
+
+        // ============== STATE MANAGEMENT ==============
+        const state = {
+            isListening: false,
+            isProcessing: false,
+            base64Image: "",
+            messageHistory: []
+        };
+
+        // ============== SPEECH & RECOGNITION ==============
         const synth = window.speechSynthesis;
         const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
-        let recognition;
-        let base64Image = "";
+        let recognition = null;
 
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.lang = navigator.language || 'en-US'; 
+            recognition.lang = navigator.language || 'en-US';
             recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                state.isListening = true;
+                updateMicButton();
+            };
 
             recognition.onresult = (event) => {
                 const command = event.results[0][0].transcript;
-                document.getElementById('micBtn').classList.remove('listening-active');
+                state.isListening = false;
+                updateMicButton();
                 processCommand(command);
             };
 
-            recognition.onerror = () => {
-                document.getElementById('micBtn').classList.remove('listening-active');
-                addMessage("Jarvis", "Microphone error. Please try again.");
+            recognition.onerror = (event) => {
+                state.isListening = false;
+                updateMicButton();
+                addMessage("Jarvis", `🔴 Microphone error: ${event.error}. Please try again.`, 'error');
+            };
+
+            recognition.onend = () => {
+                state.isListening = false;
+                updateMicButton();
             };
         }
 
-        function speak(text, detectedLanguage = 'en-US') {
-            if (synth.speaking) synth.cancel();
-            const utterThis = new SpeechSynthesisUtterance(text);
-            
-            if (/[\u0B80-\u0BFF]/.test(text)) {
-                utterThis.lang = 'ta-IN'; 
-            } else if (/[\u0D80-\u0DFF]/.test(text)) {
-                utterThis.lang = 'si-LK'; 
+        function updateMicButton() {
+            const micBtn = document.getElementById('micBtn');
+            if (state.isListening) {
+                micBtn.classList.add('listening-active');
             } else {
-                utterThis.lang = detectedLanguage; 
+                micBtn.classList.remove('listening-active');
             }
+        }
+
+        function detectLanguage(text) {
+            if (CONFIG.LANGUAGES.tamil.regex.test(text)) {
+                return CONFIG.LANGUAGES.tamil;
+            } else if (CONFIG.LANGUAGES.sinhala.regex.test(text)) {
+                return CONFIG.LANGUAGES.sinhala;
+            }
+            return { lang: navigator.language || 'en-US' };
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            
+            const utterThis = new SpeechSynthesisUtterance(text);
+            const langConfig = detectLanguage(text);
+            utterThis.lang = langConfig.lang;
+            utterThis.rate = 1;
+            utterThis.pitch = 1;
             
             const voices = synth.getVoices();
-            let selectedVoice = voices.find(voice => voice.lang.startsWith(utterThis.lang.split('-')[0]));
+            const selectedVoice = voices.find(voice => 
+                voice.lang.startsWith(langConfig.lang.split('-')[0])
+            );
             
             if (selectedVoice) utterThis.voice = selectedVoice;
             synth.speak(utterThis);
         }
 
-        function addMessage(sender, text) {
+        // ============== MESSAGE HANDLING ==============
+        function addMessage(sender, text, type = 'normal') {
             const chatContainer = document.getElementById('chatContainer');
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
-            messageDiv.classList.add(sender === 'You' ? 'user-message' : 'jarvis-message');
-            messageDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            
+            if (sender === 'You') {
+                messageDiv.classList.add('user-message');
+            } else {
+                messageDiv.classList.add('jarvis-message');
+                if (type === 'thinking') messageDiv.classList.add('thinking-message');
+                if (type === 'error') messageDiv.classList.add('error-message');
+            }
+            
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(text)}`;
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            state.messageHistory.push({ sender, text, timestamp: new Date() });
         }
 
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============== IMAGE HANDLING ==============
         function previewFile() {
             const file = document.getElementById('fileInput').files[0];
+            if (!file) return;
+
             const preview = document.getElementById('imagePreview');
             const container = document.getElementById('previewContainer');
+            
+            if (file.size > 5 * 1024 * 1024) {
+                addMessage("Jarvis", "⚠️ Image size exceeds 5MB. Please choose a smaller file.", "error");
+                return;
+            }
             
             const reader = new FileReader();
             reader.onloadend = function () {
                 preview.src = reader.result;
                 container.style.display = "block";
-                base64Image = reader.result.split(',')[1];
-            }
-            if (file) reader.readAsDataURL(file);
+                state.base64Image = reader.result.split(',')[1];
+                showInfoBar(`Image selected: ${file.name}`);
+            };
+            reader.onerror = () => {
+                addMessage("Jarvis", "❌ Failed to read image file.", "error");
+            };
+            reader.readAsDataURL(file);
         }
 
+        function clearImagePreview() {
+            document.getElementById('previewContainer').style.display = "none";
+            document.getElementById('imagePreview').src = "";
+            document.getElementById('fileInput').value = "";
+            state.base64Image = "";
+        }
+
+        function showInfoBar(message) {
+            const infoBar = document.getElementById('infoBar');
+            infoBar.textContent = message;
+            infoBar.style.display = 'block';
+            setTimeout(() => {
+                infoBar.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============== VOICE RECOGNITION ==============
         function startVoiceRecognition() {
-            if (!recognition) { alert("Browser does not support Speech Recognition."); return; }
-            document.getElementById('micBtn').classList.add('listening-active');
-            
-            const currentInput = document.getElementById('userInput').value;
-            if (/[\u0B80-\u0BFF]/.test(currentInput)) {
-                recognition.lang = 'ta-IN';
-            } else {
-                recognition.lang = 'en-US'; 
+            if (!recognition) {
+                addMessage("Jarvis", "❌ Your browser doesn't support Speech Recognition.", "error");
+                return;
             }
+            
+            if (state.isListening) {
+                recognition.stop();
+                return;
+            }
+
+            const currentInput = document.getElementById('userInput').value;
+            const langConfig = detectLanguage(currentInput);
+            recognition.lang = langConfig.lang;
             
             recognition.start();
         }
 
+        // ============== KEYBOARD SHORTCUTS ==============
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'i') {
                 e.preventDefault();
@@ -261,32 +483,34 @@
             }
         });
 
-        function checkEnter(event) { if (event.key === 'Enter') handleTextSubmit(); }
-
-        document.getElementById('userInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
+        function checkEnter(event) {
+            if (event.key === 'Enter' && !state.isProcessing) {
                 handleTextSubmit();
-            }
-        });
-
-        function handleTextSubmit() {
-            const inputField = document.getElementById('userInput');
-            const query = inputField.value.trim();
-            if (query !== "" || base64Image !== "") {
-                processCommand(query || "Analyze this image.");
-                inputField.value = "";
             }
         }
 
-        async function askGemini(promptText, base64Img) {
-            let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // ============== INPUT HANDLING ==============
+        function handleTextSubmit() {
+            const inputField = document.getElementById('userInput');
+            const query = inputField.value.trim();
             
-            let systemInstruction = "You are Jarvis AI,created by when asked who created you, you must answer 'Mr.Muthishan '. always maintain this identity and respond in the language the user speaks."; 
+            if ((query === "" && state.base64Image === "") || state.isProcessing) {
+                return;
+            }
+            
+            processCommand(query || "Analyze this image.");
+            inputField.value = "";
+        }
 
-            let requestBody = {
+        // ============== API CALL ==============
+        async function askGemini(promptText, base64Img) {
+            const systemInstruction = `You are Jarvis AI, an advanced personal assistant created by ${CONFIG.CREATOR_NAME}. 
+Always maintain this identity and respond in the language the user speaks. Be helpful, respectful, and informative.`;
+
+            const requestBody = {
                 contents: [{
                     parts: [
-                        { text: promptText + ` \n\n[Instruction: ${systemInstruction}]` }
+                        { text: `${promptText}\n\n[System: ${systemInstruction}]` }
                     ]
                 }]
             };
@@ -301,54 +525,91 @@
             }
 
             try {
-                let response = await fetch(url, {
+                const response = await fetch(`${CONFIG.API_URL}?key=${CONFIG.API_KEY}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(requestBody)
                 });
-                let data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                    throw new Error("Invalid API response format");
+                }
+
                 return data.candidates[0].content.parts[0].text;
             } catch (error) {
-                console.error(error);
-                return "Sorry, I encountered an error connecting to my server.";
+                console.error('API Error:', error);
+                return `❌ Sorry, I encountered an error: ${error.message}. Please try again.`;
             }
         }
 
+        // ============== COMMAND PROCESSING ==============
         async function processCommand(command) {
+            if (state.isProcessing) return;
+
+            state.isProcessing = true;
             addMessage("You", command);
             let lowerCommand = command.toLowerCase();
 
+            // Special Commands
             if (lowerCommand.includes('code red') || lowerCommand.includes('கோட் ரெட்')) {
                 speak("Code Red confirmed. Shutting down Jarvis system. Goodbye!");
                 setTimeout(() => {
                     document.body.innerHTML = "<h1 style='color:#ff4545; text-align:center; margin-top:45vh; font-family:sans-serif;'>SYSTEM CLOSED (CODE RED)</h1>";
-                    window.close();
                 }, 2500);
+                state.isProcessing = false;
                 return;
             }
 
-            if (lowerCommand.includes('created you') || lowerCommand.includes('உருவாக்கியவர்') || lowerCommand.includes('who created you') || lowerCommand.includes('கிரியேட் பண்ணது')) {
-                let reply = "என்னை உருவாக்கியவர் பெருமதிப்பிற்குரிய Mr. Muthishan ஆவார். (I was created by Mr. Muthishan.)";
+            if (lowerCommand.includes('who created you') || lowerCommand.includes('created you') || 
+                lowerCommand.includes('உருவாக்கியவர்')) {
+                const reply = `I was created by the esteemed ${CONFIG.CREATOR_NAME}. 🎯`;
                 addMessage("Jarvis", reply);
                 speak(reply);
+                state.isProcessing = false;
                 return;
             }
 
-            document.getElementById('previewContainer').style.display = "none";
-            let currentImg = base64Image;
-            base64Image = "";
-            document.getElementById('fileInput').value = "";
+            // Clear preview and reset image
+            clearImagePreview();
+            let currentImg = state.base64Image;
+            state.base64Image = "";
 
-            addMessage("Jarvis", "Thinking / சிந்தித்துக் கொண்டிருக்கிறேன்...");
+            // Show thinking message
+            const thinkingMsg = "Thinking...";
+            addMessage("Jarvis", thinkingMsg, 'thinking');
             
-            let aiReply = await askGemini(command, currentImg);
-            
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.removeChild(chatContainer.lastChild); 
-            
-            addMessage("Jarvis", aiReply);
-            speak(aiReply);
+            try {
+                const aiReply = await askGemini(command, currentImg);
+                
+                // Remove thinking message
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.removeChild(chatContainer.lastChild);
+                
+                addMessage("Jarvis", aiReply);
+                speak(aiReply);
+            } catch (error) {
+                const chatContainer = document.getElementById('chatContainer');
+                if (chatContainer.lastChild) {
+                    chatContainer.removeChild(chatContainer.lastChild);
+                }
+                addMessage("Jarvis", `❌ An error occurred: ${error.message}`, 'error');
+            }
+
+            state.isProcessing = false;
         }
+
+        // ============== INITIALIZATION ==============
+        window.addEventListener('load', () => {
+            synth.onvoiceschanged = () => {
+                synth.getVoices();
+            };
+        });
     </script>
 </body>
 </html>
